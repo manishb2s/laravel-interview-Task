@@ -5,6 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Http\JsonResponse;
+use App\Http\Resources\Post as PostResource;
+use Validator;
+use App\Http\Resources\PostCollection;
 
 class PostsController extends Controller
 {
@@ -13,9 +17,12 @@ class PostsController extends Controller
      *
      * @noinspection ReturnTypeCanBeDeclaredInspection
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $blogs = Post::all();
+        return response()->json([
+            'success' => true,'data' => new PostCollection($blogs)
+        ], 200);
     }
 
     /**
@@ -23,20 +30,14 @@ class PostsController extends Controller
      *
      * @noinspection ReturnTypeCanBeDeclaredInspection
      */
-    public function create()
-    {
-        //
-    }
+    
 
     /**
      * Show the form for editing the specified resource.
      *
      * @noinspection ReturnTypeCanBeDeclaredInspection
      */
-    public function edit()
-    {
-        //
-    }
+   
 
     /**
      * Display the specified resource.
@@ -45,9 +46,17 @@ class PostsController extends Controller
      *
      * @noinspection ReturnTypeCanBeDeclaredInspection
      */
-    public function show(Post $post)
+    public function show($id)
     {
-        //
+        $blog = Post::find($id);
+        if (is_null($blog)) {
+            return response()->json([
+            'error' => 'Post does not exist.'
+        ], 200); 
+        }
+        return response()->json([
+            'success' => true, 'data'=> new PostResource($blog)
+        ], 200); 
     }
 
     /**
@@ -57,9 +66,23 @@ class PostsController extends Controller
      *
      * @noinspection ReturnTypeCanBeDeclaredInspection
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        //
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'title' => 'required',
+            'body' => 'required',
+            'author_id' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json([
+            'error' => $validator->errors()
+        ], 200);      
+        }
+        $blog = Post::create($input);
+        return response()->json([
+            'success' => true, 'data'=> new PostResource($blog)
+        ], 200); 
     }
 
     /**
@@ -72,7 +95,26 @@ class PostsController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'title' => 'required',
+            'body' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+            'error' => $validator->errors()
+			], 200);      
+        }
+        
+        $post->title = $input['title'];
+        $post->body = $input['body'];
+        $post->author_id = $input['author_id'];
+        $post->save();
+        
+        return response()->json([
+            'success' => true, 'data'=> new PostResource($post)
+        ], 200); 
     }
 
     /**
@@ -84,6 +126,9 @@ class PostsController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return response()->json([
+            'success' => true, 'Message'=> 'Past Deleted'
+        ], 200); 
     }
 }

@@ -27,6 +27,7 @@ class Post extends Model
      *
      * @var array
      */
+    protected $fillable = ['title', 'body', 'author_id'];
     protected $dates = ['created_at', 'updated_at'];
 
     /**
@@ -37,5 +38,11 @@ class Post extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(Author::class);
+    }
+    
+    public function comments()
+    {
+    	return $this->hasMany(Comment::class);
+	
     }
 }

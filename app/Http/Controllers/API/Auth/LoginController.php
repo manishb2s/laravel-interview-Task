@@ -38,7 +38,7 @@ class LoginController
         ], 201);
     }
 
-    public function destroy(Request $request): Application|RedirectResponse|Redirector
+    public function destroy(Request $request): JsonResponse //Application|RedirectResponse|Redirector
     {
         $source = $request->input('source');
 
@@ -47,7 +47,9 @@ class LoginController
         } else {
             $request->user()->tokens()->delete();
         }
-
-        return redirect('/');
+       // return redirect('/');
+	return response()->json([
+            'message' => 'Logut'
+        ], 201);
     }
 }

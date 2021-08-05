@@ -20,7 +20,7 @@ class AuthenticatedSessionController extends Controller
      *
      * @return Factory|View|Application
      */
-    public function create(): Factory|View|Application
+    public function create()
     {
         return view('auth.login');
     }

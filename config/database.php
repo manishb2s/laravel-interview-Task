@@ -44,10 +44,10 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'database' => env('DB_DATABASE', 'laravel_interview'),
-            'host' => env('DB_HOST', '127.0.0.1'),
+            'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', 3306),
             'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
+            'password' => env('DB_PASSWORD', 'admin@123'),
             'charset' => 'utf8mb4',
             'unix_socket' => env('DB_SOCKET', ''),
             'prefix_indexes' => true,

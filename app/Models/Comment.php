@@ -26,6 +26,7 @@ class Comment extends Model
      *
      * @var array
      */
+    protected $fillable = ['body', 'post_id', 'user_id'];
     protected $dates = [
         'created_at',
         'updated_at'
@@ -39,5 +40,10 @@ class Comment extends Model
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
+    }
+    
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }
